@@ -1,0 +1,4 @@
+node_modules
+.serverless
+.env
+serverless_off.yml
