@@ -66,7 +66,10 @@ class CourseRepository {
 	}
 
 	async remove(courseId) {
-		return await CourseModel.updateOne({ _id: courseId, deletedAt: null });
+		return await CourseModel.updateOne(
+			{ _id: courseId, deletedAt: null }, 
+			{ deletedAt: new Date(), updatedAt: new Date() }
+		);
 	}
 
 	#defaultPipeline() {

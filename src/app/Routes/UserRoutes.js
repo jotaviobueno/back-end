@@ -29,5 +29,4 @@ userRoutes.delete("/",
 	UserController.remove
 );
 
-
 module.exports.userRoutes = userRoutes;
