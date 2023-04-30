@@ -43,6 +43,7 @@ class ClassService {
 			unprocessableEntity("you already did this lesson and you were not present in class");
 
 		const amount_of_output = await FinanceRepository.update(user._id);
+
 		if (!amount_of_output)
 			unprocessableEntity("Your credits for this course have run out");
   
@@ -143,15 +144,9 @@ class ClassService {
 			classId: _class._id,
 			status: "absence"
 		});
-      
+    
 		if (! studentAlreadyTookThisClass) unprocessableEntity("you didn't miss this class");
     
-		const userAlreadyCreateThisJustification = 
-    await FinanceRepository.userAlreadyCreatedJustification(user._id, classroomAndCourse.course._id, _class._id);
-
-		if (userAlreadyCreateThisJustification) 
-			badRequest("you already created a justification for this class");
-
 		await FinanceRepository.exit({
 			type: "entrie", 
 			studentId: user._id, 

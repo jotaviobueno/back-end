@@ -5,7 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const config = require("./config/config.js");
 
-// POR PROBLEMAS TIVER QUE DEIXAR ASSIM
+// POR PROBLEMAS TIVE QUE DEIXAR ASSIM
 const {userRoutes} = require("./app/Routes/UserRoutes.js");
 const {authRoutes} = require("./app/Routes/AuthRoutes.js");
 const {courseRoutes} = require("./app/Routes/CourseRoutes.js");

@@ -2,12 +2,17 @@ const ClassroomModel = require("../../../Models/ClassroomModel.js");
 
 class ClassRoomRepository {
 
+	#model;
+	constructor() {
+		this.#model = ClassroomModel;
+	}
+
 	async create() {
-		return await ClassroomModel.create({});
+		return await this.#model.create({});
 	}
 
 	async findByclassroomId(classroomId) {
-		return await ClassroomModel.findOne({_id: classroomId});
+		return await this.#model.findOne({_id: classroomId});
 	}
 
 	async findClassroomAndCourse(classroom_id) {
@@ -31,7 +36,7 @@ class ClassRoomRepository {
 			}
 		];
 
-		const results = await ClassroomModel.aggregate(pipeline);
+		const results = await this.#model.aggregate(pipeline);
 
 		return results[0];
 	}
@@ -119,7 +124,7 @@ class ClassRoomRepository {
 			}
 		];
 
-		const results = await ClassroomModel.aggregate(pipeline);
+		const results = await this.#model.aggregate(pipeline);
 
 		return results[0];
 	}
@@ -128,13 +133,13 @@ class ClassRoomRepository {
 		let pipeline = this.#defaultPipeline();
 		pipeline[0]["$match"]["classroom_id"] = classroom_id;
 
-		const results = await ClassroomModel.aggregate(pipeline);
+		const results = await this.#model.aggregate(pipeline);
 
 		return results[0];
 	}
 
 	async remove(classId) {
-		return await ClassroomModel.updateOne({_id: classId, deletedAt: null}, {
+		return await this.#model.updateOne({_id: classId, deletedAt: null}, {
 			deletedAt: new Date(),
 			updatedAt: new Date()
 		});

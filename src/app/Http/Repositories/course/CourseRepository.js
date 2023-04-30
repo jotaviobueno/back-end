@@ -2,19 +2,24 @@ const CourseModel = require("../../../Models/CourseModel.js");
 
 class CourseRepository {
 
+	#model;
+	constructor() {
+		this.#model = CourseModel;
+	}
+
 	async create(userId, classroomId, createCourseDto) {
-		return await CourseModel.create({createdBy: userId, classroomId, ...createCourseDto});
+		return await this.#model.create({createdBy: userId, classroomId, ...createCourseDto});
 	}
 
 	async findByCourseId(course_id) {
-		return await CourseModel.findOne({ course_id, deletedAt: null });
+		return await this.#model.findOne({ course_id, deletedAt: null });
 	}
 
 	async findAllCoursesByUserId(userId) {
 		let pipeline = this.#defaultPipeline();
 		pipeline[0]["$match"]["createdBy"] = userId;
 
-		const results = await CourseModel.aggregate(pipeline);
+		const results = await this.#model.aggregate(pipeline);
 
 		return results;
 	}
@@ -23,7 +28,7 @@ class CourseRepository {
 		let pipeline = this.#defaultPipeline();
 		pipeline[0]["$match"]["course_id"] = course_id;
 
-		const results = await CourseModel.aggregate(pipeline);
+		const results = await this.#model.aggregate(pipeline);
 
 		return results[0];
 	}
@@ -46,27 +51,27 @@ class CourseRepository {
 		if (searchOptions.course_id)
 			pipeline[0]["$match"]["$or"] = [{ course_id: { $regex: searchOptions.course_id, $options: "i" } }];
 
-		const results = await CourseModel.aggregate([...pipeline, ...paginationAndProject]);
+		const results = await this.#model.aggregate([...pipeline, ...paginationAndProject]);
 
 		return results;
 	}
 
 	async update(courseId, updateCourseDto) {
-		return await CourseModel.updateOne({ _id: courseId, deletedAt: null }, { ...updateCourseDto, updatedAt: new Date() });
+		return await this.#model.updateOne({ _id: courseId, deletedAt: null }, { ...updateCourseDto, updatedAt: new Date() });
 	}
 
 	async countingDocumentsByName(searchOptions) {
 		if (searchOptions.name)
-			return await CourseModel.countDocuments({ $or: [{ name: { $regex: searchOptions.name, $options: "i" } }] });
+			return await this.#model.countDocuments({ $or: [{ name: { $regex: searchOptions.name, $options: "i" } }] });
 
 		if (searchOptions.course_id)
-			return await CourseModel.countDocuments({ $or: [{ course_id: { $regex: searchOptions.course_id, $options: "i" } }] });
+			return await this.#model.countDocuments({ $or: [{ course_id: { $regex: searchOptions.course_id, $options: "i" } }] });
     
 		return 0;
 	}
 
 	async remove(courseId) {
-		return await CourseModel.updateOne(
+		return await this.#model.updateOne(
 			{ _id: courseId, deletedAt: null }, 
 			{ deletedAt: new Date(), updatedAt: new Date() }
 		);

@@ -48,7 +48,7 @@ class UserService {
 	async search(searchOptions, options) {
 		const total = await UserRepository.countingDocumentsByName(searchOptions);
 
-		if (total === 0) notFound("no user with that name was found");
+		if (total === 0) notFound("none user found");
 
 		const users = await UserRepository.search(searchOptions, options);
 

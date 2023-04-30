@@ -6,6 +6,7 @@ const { unprocessableEntity, notFound, forbidden } = require("../../../common/Er
 const PaginationService = require("../pagination/PaginationService.js");
 const FinanceRepository = require("../../Repositories/finance/FinanceRepository.js");
 const {courseAndClassroomMapper} = require("../../../common/Mappers/CourseMapper.js");
+const FrequencyRepository = require("../../Repositories/frequency/FrequencyRepository.js");
 
 class CourseService {
 
@@ -113,7 +114,14 @@ class CourseService {
 
 		if (! course) notFound("course not found");
 
+		console.log(user._id.toString(), course.createdBy.toString());
+
 		if (user._id.toString() != course.createdBy.toString()) forbidden("you delete update a course that is not yours");
+
+		const totalFrenquency = await FrequencyRepository.frequencyCountingWithClassroom(course._id);
+
+		if (totalFrenquency != 0) 
+			unprocessableEntity("não possivel deletar uma class que não esteja com frequencia 0");
 
 		const remove = await CourseRepository.remove(course._id);
 

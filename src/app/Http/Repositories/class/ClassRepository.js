@@ -2,12 +2,17 @@ const ClassModel = require("../../../Models/ClassModel.js");
 
 class ClassRepository {
 
+	#model;
+	constructor() {
+		this.#model = ClassModel;
+	}
+
 	async create(classroomId, userId, createClassDto,) {
-		return await ClassModel.create({...createClassDto, createdBy: userId, classroomId});
+		return await this.#model.create({...createClassDto, createdBy: userId, classroomId});
 	}
 
 	async findByClassId(class_id) {
-		return await ClassModel.findOne({class_id, deletedAt: null});
+		return await this.#model.findOne({class_id, deletedAt: null});
 	}
 }
 

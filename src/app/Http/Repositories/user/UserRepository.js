@@ -2,32 +2,37 @@ const UserModel = require("../../../Models/UserModel.js");
 
 class UserRepository {
   
+	#model;
+	constructor() {
+		this.#model = UserModel;
+	}
+
 	async create(createUserDto) {
-		return await UserModel.create({...createUserDto, email: { address: createUserDto.email }});
+		return await this.#model.create({...createUserDto, email: { address: createUserDto.email }});
 	}
  
 	async forceFindByEmail(email) {
-		return await UserModel.findOne({ "email.address": email });
+		return await this.#model.findOne({ "email.address": email });
 	}
 
 	async findByEmail(email) {
-		return await UserModel.findOne({ "email.address": email, deletedAt: null });
+		return await this.#model.findOne({ "email.address": email, deletedAt: null });
 	}
 
 	async forceFindByUsername(username) {
-		return await UserModel.findOne({username});
+		return await this.#model.findOne({username});
 	}
 
 	async findByUsername(username) {
-		return await UserModel.findOne({ username, deletedAt: null });
+		return await this.#model.findOne({ username, deletedAt: null });
 	}
 
 	async findByUserId(userId) {
-		return await UserModel.findOne({_id: userId, deletedAt: null});
+		return await this.#model.findOne({_id: userId, deletedAt: null});
 	}
 
 	async findByAccountId(account_id) {
-		return await UserModel.findOne({account_id, deletedAt: null});
+		return await this.#model.findOne({account_id, deletedAt: null});
 	}
 
 	async search(searchOptions, {skip, limit}) {
@@ -52,7 +57,7 @@ class UserRepository {
 				{ last_name: { $regex: searchOptions.name, $options: "i" } }
 			];
 
-		return await UserModel.aggregate([...defaultSearchPipeline, ...pagination]);
+		return await this.#model.aggregate([...defaultSearchPipeline, ...pagination]);
 	}
 
 	async aggregateShowUser(username) {
@@ -72,7 +77,7 @@ class UserRepository {
 			}
 		];
 
-		const results = await UserModel.aggregate([...pipeline, ...project]);
+		const results = await this.#model.aggregate([...pipeline, ...project]);
 
 		return results[0];
 	}
@@ -80,16 +85,16 @@ class UserRepository {
 	async countingDocumentsByName(searchOptions) {
 
 		if (searchOptions.account_id)
-			return await UserModel.countDocuments({ $or: [{ account_id: { $regex: searchOptions.account_id, $options: "i" } }]});
+			return await this.#model.countDocuments({ $or: [{ account_id: { $regex: searchOptions.account_id, $options: "i" } }]});
 
 		if (searchOptions.username)
-			return await UserModel.countDocuments({ $or: [{ username: { $regex: searchOptions.username, $options: "i" } }]});
+			return await this.#model.countDocuments({ $or: [{ username: { $regex: searchOptions.username, $options: "i" } }]});
 
 		if (searchOptions.email) 
-			return await UserModel.countDocuments({ $or: [{ email: { $regex: searchOptions.email, $options: "i" } }]});
+			return await this.#model.countDocuments({ $or: [{ email: { $regex: searchOptions.email, $options: "i" } }]});
 
 		if (searchOptions.name) 
-			return await UserModel.countDocuments({ $or: [
+			return await this.#model.countDocuments({ $or: [
 				{ first_name: { $regex: searchOptions.name, $options: "i" } }, 
 				{ last_name: { $regex: searchOptions.name, $options: "i" } }] 
 			});
@@ -98,15 +103,15 @@ class UserRepository {
 	}
 
 	async update(userId, updateUserDto) {
-		return await UserModel.updateOne({ _id: userId, deletedAt: null }, { ...updateUserDto, updatedAt: new Date() });
+		return await this.#model.updateOne({ _id: userId, deletedAt: null }, { ...updateUserDto, updatedAt: new Date() });
 	}
 
 	async includePermission(userId, permission) {
-		return await UserModel.updateOne({ _id: userId, deletedAt: null }, { $push: {permissions: permission}, updateAt: new Date() });
+		return await this.#model.updateOne({ _id: userId, deletedAt: null }, { $push: {permissions: permission}, updateAt: new Date() });
 	}
 
 	async remove(userId) {
-		return await UserModel.updateOne(
+		return await this.#model.updateOne(
 			{_id: userId, deletedAt: null}, 
 			{deletedAt: new Date(), updatedAt: new Date()}
 		);

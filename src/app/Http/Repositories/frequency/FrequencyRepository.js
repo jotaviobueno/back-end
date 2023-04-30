@@ -2,15 +2,21 @@ const FrequancyModel = require("../../../Models/FrequancyModel.js");
 
 class FrequencyRepository {
 
+	#model;
+	constructor() {
+		this.#model = FrequancyModel;
+	}
+
 	async create(createFrequencyDto) {
-		return await FrequancyModel.create({...createFrequencyDto});
+		return await this.#model.create({...createFrequencyDto});
 	}
 
 	async frequencyCountingWithClassroom(classroomId) {
-		return await FrequancyModel.countDocuments({classroomId});
+		return await this.#model.countDocuments({classroomId});
 	}
+	
 	async studentHasAlreadyTakenThisClass(findOptions) {
-		return await FrequancyModel.findOne({...findOptions});
+		return await this.#model.findOne({...findOptions});
 	}
 }
 

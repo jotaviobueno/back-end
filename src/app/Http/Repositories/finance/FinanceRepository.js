@@ -2,29 +2,34 @@ const FinanceModel = require("../../../Models/FinanceModel.js");
 
 class FinanceRepository {
 
+	#model;
+	constructor() {
+		this.#model = FinanceModel;
+	}
+
 	async create(createEntry) {
-		return await FinanceModel.create(
+		return await this.#model.create(
 			{ ...createEntry }
 		);
 	}
 
 	async update(studentId) {
-		return await FinanceModel.findOneAndUpdate(
-			{ studentId, type: "entrie", status: "open", classes_quantity: { $gt: 0 } }, 
+		return await this.#model.findOneAndUpdate(
+			{ studentId, type: "entrie", classes_quantity: { $gt: 0 } }, 
 			{ $inc: { classes_quantity: -1 }, updatedAt: new Date() },
 		);
 	}
 
 	async updateStatus(financeId, status) {
-		return await FinanceModel.updateOne({ _id: financeId}, { status, updatedAt: new Date() });
+		return await this.#model.updateOne({ _id: financeId}, { status, updatedAt: new Date() });
 	}
 
 	async userAlreadyCreatedJustification(studentId, courseId, classId) {
-		return await FinanceModel.findOne({studentId, courseId, classId});
+		return await this.#model.findOne({studentId, courseId, classId});
 	}
 
 	async exit(createExit) {
-		return await FinanceModel.create({
+		return await this.#model.create({
 			...createExit
 		});
 	}

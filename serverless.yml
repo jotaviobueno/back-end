@@ -1,12 +1,14 @@
 service: aws-node-express-api-project
 frameworkVersion: '3'
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs18.x
   environment:
-    MONGO_URI: 'mongodb+srv://veraluciasebastiaooo12:9fzMgpdKBN8jh5SG@cluster0.vivi9v9.mongodb.net/?retryWrites=true&w=majority'
-    JWT_SECRET: 'JNDAIOJ1SDBNoiasbndioab1snoiDNBASIONBDAIOBNDIQOBNWEIQWUHE17892Y378192637286317836Y8DAGSHuyhodbasvOUVDBQOYUVWEYUOQBVOUYBV'
+    MONGO_URI: ${env:MONGO_URI}
+    JWT_SECRET: ${env:JWT_SECRET}
     APP_ENV: 'production'
 
 functions:
@@ -17,3 +19,4 @@ functions:
 
 plugins:
   - serverless-offline
+  - serverless-dotenv-plugin
