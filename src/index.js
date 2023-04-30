@@ -9,6 +9,7 @@ const config = require("./config/config.js");
 const {userRoutes} = require("./app/Routes/UserRoutes.js");
 const {authRoutes} = require("./app/Routes/AuthRoutes.js");
 const {courseRoutes} = require("./app/Routes/CourseRoutes.js");
+const {classroomRoutes} = require("./app/Routes/ClassroomRoutes.js");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
 app.use("/course", courseRoutes);
+app.use("/classroom", classroomRoutes);
 
 app.get("/", (req, res) => {
 	return res.status(200).json({ message: "OK" });
